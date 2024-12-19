@@ -135,7 +135,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_environnement2_name'), '/default')]",
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_environnement2_name'))]"
             ],
@@ -156,7 +156,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2023-05-01",
-            "name": "[concat(parameters('storageAccounts_environnement2_name'), '/default/container2')]",
+            "name": "[concat(parameters('storageAccountName'), '/default/container2')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_environnement2_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_environnement2_name'))]"
