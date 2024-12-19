@@ -6,8 +6,8 @@
 trigger:
 - main
 
-pool: #default
- vmImage: ubuntu-latest
+pool: default
+
 
 steps:
 - script: echo Hello, world!
