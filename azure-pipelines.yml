@@ -10,7 +10,7 @@ pool: default
 
 
 steps:
-- script: echo Hello, world!
+
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
