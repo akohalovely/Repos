@@ -20,6 +20,6 @@ steps:
     resourceGroupName: 'Ressource_groupe2'
     location: 'West Europe'
     templateLocation: 'Linked artifact'
-    csmFile: '$(BuildDirectory)\TP2_Azure\azuredeploy.json'
-    csmParametersFile: '$(BuildDirectory)\TP2_Azure\azuredeploy.parameters.json'
+    csmFile: '$(Build.SourcesDirectory)\TP2_Azure\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\TP2_Azure\azuredeploy.parameters.json'
     deploymentMode: 'Incremental'
