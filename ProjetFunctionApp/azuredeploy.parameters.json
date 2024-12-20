@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "ed84d7cb-a009-41e8-9f67-6bad56b8d14e"
+        },
+        "name": {
+            "value": "FunctionAppTp2"
+        },
+        "location": {
+            "value": "Canada Central"
+        },
+        "use32BitWorkerProcess": {
+            "value": false
+        },
+        "ftpsState": {
+            "value": "FtpsOnly"
+        },
+        "storageAccountName": {
+            "value": "ressourcegroupe80cc"
+        },
+        "netFrameworkVersion": {
+            "value": "v8.0"
+        },
+        "sku": {
+            "value": "Dynamic"
+        },
+        "skuCode": {
+            "value": "Y1"
+        },
+        "workerSize": {
+            "value": "0"
+        },
+        "workerSizeId": {
+            "value": "0"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "hostingPlanName": {
+            "value": "ASP-RessourceGroupe-854d"
+        },
+        "serverFarmResourceGroup": {
+            "value": "RessourceGroupe"
+        },
+        "alwaysOn": {
+            "value": false
+        }
+    }
+}
