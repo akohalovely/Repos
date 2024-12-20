@@ -11,6 +11,7 @@ pool: default
 
 steps:
 
+
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -22,4 +23,16 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Build.SourcesDirectory)\TP2_Azure\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\TP2_Azure\azuredeploy.parameters.json'
+    deploymentMode: 'Incremental'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Azure subscription 1(1)(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'
+    subscriptionId: 'ed84d7cb-a009-41e8-9f67-6bad56b8d14e'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'RessourceGroupe'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\ProjetFunctionApp\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\ProjetFunctionApp\azuredeploy.parameters.json'
     deploymentMode: 'Incremental'
