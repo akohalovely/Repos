@@ -1,6 +1,5 @@
 trigger:
-- main  # Ce pipeline démarre automatiquement lorsqu'il y a des changements dans la branche principale.
-
+- main  
 pool: default  # On utilise un agent par défaut pour exécuter toutes les étapes.
 
 steps:
