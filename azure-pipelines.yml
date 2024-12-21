@@ -1,69 +1,70 @@
 trigger:
-- main  
-pool: default  # On utilise un agent par défaut pour exécuter toutes les étapes.
+- main  # Le pipeline s'exécute automatiquement sur la branche principale.
+
+pool: default  # Utilisation de l'agent par défaut pour exécuter toutes les étapes.
 
 steps:
 
-# Déploiement des ressources Azure pour le projet TP2
+# Étape 1 : Déploiement des ressources Azure pour le projet TP2
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: "Deploy TP2 Azure Resources"
   inputs:
-    deploymentScope: 'Resource Group'  # On déploie dans un groupe de ressources Azure.
-    azureResourceManagerConnection: 'Azure subscription 1(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'  # C'est ici qu'on connecte notre compte Azure.
-    subscriptionId: 'ed84d7cb-a009-41e8-9f67-6bad56b8d14e'  # L'identifiant unique de la souscription Azure.
-    action: 'Create Or Update Resource Group'  # On crée ou met à jour un groupe de ressources.
-    resourceGroupName: 'Ressource_groupe2'  # Nom du groupe de ressources qu'on souhaite gérer.
-    location: 'West Europe'  # Région où les ressources seront hébergées.
-    templateLocation: 'Linked artifact'  # On indique où trouver le modèle pour déployer les ressources.
-    csmFile: '$(Build.SourcesDirectory)\TP2_Azure\azuredeploy.json'  # Le fichier qui décrit les ressources à déployer.
-    csmParametersFile: '$(Build.SourcesDirectory)\TP2_Azure\azuredeploy.parameters.json'  # Les paramètres spécifiques pour ce déploiement.
-    deploymentMode: 'Incremental'  # On déploie seulement ce qui a changé, sans toucher aux autres ressources.
+    deploymentScope: 'Resource Group'  # Déploiement dans un groupe de ressources Azure.
+    azureResourceManagerConnection: 'Azure subscription 1(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'  # Connexion à la souscription Azure.
+    subscriptionId: 'ed84d7cb-a009-41e8-9f67-6bad56b8d14e'  # ID de la souscription Azure.
+    action: 'Create Or Update Resource Group'  # Créer ou mettre à jour un groupe de ressources.
+    resourceGroupName: 'Ressource_groupe2'  # Nom du groupe de ressources.
+    location: 'West Europe'  # Région pour le déploiement des ressources.
+    templateLocation: 'Linked artifact'  # Le modèle ARM est lié comme un artefact.
+    csmFile: '$(System.DefaultWorkingDirectory)/TP2_Azure/azuredeploy.json'  # Chemin corrigé vers le fichier modèle JSON.
+    csmParametersFile: '$(System.DefaultWorkingDirectory)/TP2_Azure/azuredeploy.parameters.json'  # Chemin corrigé vers le fichier des paramètres.
+    deploymentMode: 'Incremental'  # Déploiement incrémental pour éviter les changements inutiles.
 
-# Déploiement des ressources nécessaires pour la Function App
+# Étape 2 : Déploiement des ressources nécessaires pour la Function App
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: "Function Deployment"
   inputs:
     deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'Azure subscription 1(1)(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'
+    azureResourceManagerConnection: 'Azure subscription 1(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'  # Connexion valide pour le déploiement.
     subscriptionId: 'ed84d7cb-a009-41e8-9f67-6bad56b8d14e'
     action: 'Create Or Update Resource Group'
     resourceGroupName: 'RessourceGroupe'
     location: 'West Europe'
     templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\ProjetFunctionApp\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\ProjetFunctionApp\azuredeploy.parameters.json'
+    csmFile: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/azuredeploy.json'  # Chemin corrigé vers le fichier modèle.
+    csmParametersFile: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/azuredeploy.parameters.json'  # Chemin corrigé vers les paramètres.
     deploymentMode: 'Incremental'
 
-# Préparation du projet Function App : restauration des dépendances
+# Étape 3 : Restauration des dépendances du projet Function App
 - task: DotNetCoreCLI@2
   displayName: "Restore Project"
   inputs:
-    command: 'restore'  # Première étape : on restaure tous les packages nécessaires pour le projet.
-    projects: '$(Build.SourcesDirectory)/ProjetFunctionApp/*.csproj'  # Cible tous les fichiers .csproj dans ce dossier.
+    command: 'restore'
+    projects: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/*.csproj'  # Chemin corrigé vers les projets .NET Core.
 
-# Compilation du projet Function App
+# Étape 4 : Compilation du projet Function App
 - task: DotNetCoreCLI@2
   displayName: "Build Azure Function"
   inputs:
-    command: 'build'  # Deuxième étape : on compile le projet.
-    projects: '$(Build.SourcesDirectory)/ProjetFunctionApp/*.csproj'  # Cible encore les fichiers .csproj.
-    arguments: '--configuration Release --output $(Build.BinariesDirectory)'  # On s'assure d'avoir une version optimisée (Release).
+    command: 'build'
+    projects: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/*.csproj'  # Chemin corrigé.
+    arguments: '--configuration Release --output $(Build.BinariesDirectory)'  # Compilation optimisée en Release.
 
-# Publication de la Function App prête à être déployée
+# Étape 5 : Publication du projet Function App
 - task: DotNetCoreCLI@2
   displayName: "Publish Azure Function"
   inputs:
-    command: 'publish'  # Troisième étape : on prépare tout pour le déploiement.
-    projects: '$(Build.SourcesDirectory)/ProjetFunctionApp/*.csproj'
-    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'  # Les fichiers finaux vont dans un répertoire spécifique.
+    command: 'publish'
+    projects: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/*.csproj'  # Chemin corrigé.
+    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'  # Préparation des artefacts pour publication.
     publishWebProjects: false
-    zipAfterPublish: true  # On compresse tout le projet pour faciliter le déploiement.
+    zipAfterPublish: true
     modifyOutputPath: false
 
-# Publication des fichiers générés pour qu'ils soient disponibles pour d'autres tâches ou étapes
+# Étape 6 : Publication des artefacts générés
 - task: PublishBuildArtifacts@1
   displayName: "Publish Build Artifacts"
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'  # Dossier où sont les artefacts publiés.
-    ArtifactName: 'drop'  # On les nomme "drop" pour les identifier facilement.
-    publishLocation: 'Container'  # Tout est stocké dans un conteneur interne.
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'  # Répertoire de staging des artefacts.
+    ArtifactName: 'drop'  # Nom des artefacts publiés.
+    publishLocation: 'Container'  # Publication dans un conteneur interne.
