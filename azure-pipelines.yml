@@ -35,21 +35,36 @@ steps:
     csmParametersFile: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/azuredeploy.parameters.json'  # Chemin corrigé vers les paramètres.
     deploymentMode: 'Incremental'
 
-# Étape 4 : Compilation du projet Function App
+
+# Étape 1 : Installation du SDK .NET
+- task: UseDotNet@2
+  displayName: "Install .NET SDK"
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'  # Remplacez par la version spécifique.
+
+# Étape 3 : Restauration des dépendances
+- task: DotNetCoreCLI@2
+  displayName: "Restore Project"
+  inputs:
+    command: 'restore'
+    projects: '$(System.DefaultWorkingDirectory)/TP2_Azure/FunctionApp2/FunctionApp2.csproj'
+
+# Étape 4 : Compilation du projet
 - task: DotNetCoreCLI@2
   displayName: "Build Azure Function"
   inputs:
     command: 'build'
-    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  
-    arguments: '--configuration Release --output $(Build.BinariesDirectory)'  
+    projects: '$(System.DefaultWorkingDirectory)/TP2_Azure/FunctionApp2/FunctionApp2.csproj'  
+    arguments: '--configuration Release --output $(Build.BinariesDirectory)'
 
-# Étape 5 : Publication du projet Function App
+# Étape 5 : Publication du projet
 - task: DotNetCoreCLI@2
   displayName: "Publish Azure Function"
   inputs:
     command: 'publish'
-    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  # Chemin exact du fichier projet .csproj.
-    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'  # Préparation des artefacts pour publication.
+    projects: '$(System.DefaultWorkingDirectory)/TP2_Azure/FunctionApp2/FunctionApp2.csproj'
+    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
     publishWebProjects: false
     zipAfterPublish: true
     modifyOutputPath: false
@@ -58,6 +73,6 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: "Publish Build Artifacts"
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'  # Répertoire de staging des artefacts.
-    ArtifactName: 'drop'  # Nom des artefacts publiés.
-    publishLocation: 'Container'  # Publication dans un conteneur interne.
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
