@@ -40,14 +40,14 @@ steps:
   displayName: "Restore Project"
   inputs:
     command: 'restore'
-    projects: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/*.csproj'  # Chemin corrigé vers les projets .NET Core.
+    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  # Chemin exact du fichier projet .csproj.
 
 # Étape 4 : Compilation du projet Function App
 - task: DotNetCoreCLI@2
   displayName: "Build Azure Function"
   inputs:
     command: 'build'
-    projects: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/*.csproj'  # Chemin corrigé.
+    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  # Chemin exact du fichier projet .csproj.
     arguments: '--configuration Release --output $(Build.BinariesDirectory)'  # Compilation optimisée en Release.
 
 # Étape 5 : Publication du projet Function App
@@ -55,7 +55,7 @@ steps:
   displayName: "Publish Azure Function"
   inputs:
     command: 'publish'
-    projects: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/*.csproj'  # Chemin corrigé.
+    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  # Chemin exact du fichier projet .csproj.
     arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'  # Préparation des artefacts pour publication.
     publishWebProjects: false
     zipAfterPublish: true
