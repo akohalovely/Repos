@@ -1,24 +1,24 @@
 trigger:
 - main  # Le pipeline s'exécute automatiquement sur la branche principale.
 
-pool: default  # Utilisation de l'agent par défaut pour exécuter toutes les étapes.
+pool: default  
 
 steps:
 
-# Étape 1 : Déploiement des ressources Azure pour le projet TP2
+# Étape 1 : Déploiement des ressources Azure 
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: "Deploy TP2 Azure Resources"
   inputs:
-    deploymentScope: 'Resource Group'  # Déploiement dans un groupe de ressources Azure.
-    azureResourceManagerConnection: 'Azure subscription 1(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'  # Connexion à la souscription Azure.
-    subscriptionId: 'ed84d7cb-a009-41e8-9f67-6bad56b8d14e'  # ID de la souscription Azure.
-    action: 'Create Or Update Resource Group'  # Créer ou mettre à jour un groupe de ressources.
-    resourceGroupName: 'Ressource_groupe2'  # Nom du groupe de ressources.
-    location: 'West Europe'  # Région pour le déploiement des ressources.
-    templateLocation: 'Linked artifact'  # Le modèle ARM est lié comme un artefact.
-    csmFile: '$(System.DefaultWorkingDirectory)/TP2_Azure/azuredeploy.json'  # Chemin corrigé vers le fichier modèle JSON.
-    csmParametersFile: '$(System.DefaultWorkingDirectory)/TP2_Azure/azuredeploy.parameters.json'  # Chemin corrigé vers le fichier des paramètres.
-    deploymentMode: 'Incremental'  # Déploiement incrémental pour éviter les changements inutiles.
+    deploymentScope: 'Resource Group'  
+    azureResourceManagerConnection: 'Azure subscription 1(ed84d7cb-a009-41e8-9f67-6bad56b8d14e)'  
+    subscriptionId: 'ed84d7cb-a009-41e8-9f67-6bad56b8d14e'  
+    action: 'Create Or Update Resource Group'  
+    resourceGroupName: 'Ressource_groupe2'  
+    location: 'West Europe'  # .
+    templateLocation: 'Linked artifact'  
+    csmFile: '$(System.DefaultWorkingDirectory)/TP2_Azure/azuredeploy.json'  
+    csmParametersFile: '$(System.DefaultWorkingDirectory)/TP2_Azure/azuredeploy.parameters.json'  
+    deploymentMode: 'Incremental'  
 
 # Étape 2 : Déploiement des ressources nécessaires pour la Function App
 - task: AzureResourceManagerTemplateDeployment@3
@@ -35,20 +35,13 @@ steps:
     csmParametersFile: '$(System.DefaultWorkingDirectory)/ProjetFunctionApp/azuredeploy.parameters.json'  # Chemin corrigé vers les paramètres.
     deploymentMode: 'Incremental'
 
-# Étape 3 : Restauration des dépendances du projet Function App
-- task: DotNetCoreCLI@2
-  displayName: "Restore Project"
-  inputs:
-    command: 'restore'
-    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  # Chemin exact du fichier projet .csproj.
-
 # Étape 4 : Compilation du projet Function App
 - task: DotNetCoreCLI@2
   displayName: "Build Azure Function"
   inputs:
     command: 'build'
-    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  # Chemin exact du fichier projet .csproj.
-    arguments: '--configuration Release --output $(Build.BinariesDirectory)'  # Compilation optimisée en Release.
+    projects: 'C:\Users\erici\source\repos\TP2_Azure\FunctionApp2\FunctionApp2.csproj'  
+    arguments: '--configuration Release --output $(Build.BinariesDirectory)'  
 
 # Étape 5 : Publication du projet Function App
 - task: DotNetCoreCLI@2
